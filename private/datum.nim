@@ -147,7 +147,7 @@ proc `&`*(b: BinaryData): MutableDatum =
   result.kind = R_BINARY
   result.binary = b
 
-proc `&`*(t: TimeInfo): MutableDatum =
+proc `&`*(t: DateTime): MutableDatum =
   result = new(MutableDatum)
   result.kind = R_TIME
   result.time = t

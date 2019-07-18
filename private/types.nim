@@ -1,6 +1,5 @@
 import ql2
 import tables
-import datum
 import times
 
 type
@@ -26,7 +25,7 @@ type
     of R_BINARY:
       binary*: BinaryData
     of R_TIME:
-      time*: TimeInfo
+      time*: DateTime
     of R_TERM:
       term*: RqlQuery
 

@@ -196,8 +196,8 @@ else:
         raise newException(RqlCompileError, $response.data[0])
       of RUNTIME_ERROR:
         raise newException(RqlRuntimeError, $response.data[0])
-      else:
-        raise newException(RqlDriverError, "Unknown response type $#" % [$response.kind])
+      #else:
+        #raise newException(RqlDriverError, "Unknown response type $#" % [$response.kind])
 
 
 proc makeVar(i: int): RqlQuery =

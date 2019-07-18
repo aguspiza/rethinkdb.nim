@@ -29,11 +29,11 @@ proc `%`*[T](r: RqlQuery, b: T): RqlQuery =
   ## Find the remainder when dividing two numbers.
   NEW_QUERY(MOD, r, b)
 
-proc `and`*[T](r: RqlQuery, b: T): untyped =
+proc `and`*[T](r: RqlQuery, b: T): RqlQuery =
   ## Compute the logical “and” of two or more values
   NEW_QUERY(AND, r, b)
 
-proc `&`*[T](r: RqlQuery, e: T): untyped =
+proc `&`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `and`
   r and e
 
@@ -41,7 +41,7 @@ proc `or`*[T](r: RqlQuery, b: T): RqlQuery =
   ## Compute the logical “or” of two or more values.
   NEW_QUERY(OR, r, b)
 
-proc `|`*[T](r: RqlQuery, e: T): untyped =
+proc `|`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `or`
   r or e
 
@@ -50,7 +50,7 @@ proc `eq`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(EQ, r, t)
 
-proc `==`*[T](r: RqlQuery, e: T): untyped =
+proc `==`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `eq`
   r.eq(e)
 
@@ -59,7 +59,7 @@ proc `ne`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(NE, r, t)
 
-proc `!=`*[T](r: RqlQuery, e: T): untyped =
+proc `!=`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `ne`
   r.ne(e)
 
@@ -68,7 +68,7 @@ proc `gt`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(GT, r, t)
 
-proc `>`*[T](r: RqlQuery, e: T): untyped =
+proc `>`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `gt`
   r.gt(e)
 
@@ -77,7 +77,7 @@ proc `ge`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(GE, r, t)
 
-proc `>=`*[T](r: RqlQuery, e: T): untyped =
+proc `>=`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `ge`
   r.ge(e)
 
@@ -86,7 +86,7 @@ proc `lt`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(LT, r, t)
 
-proc `<`*[T](e: T, r: RqlQuery): untyped =
+proc `<`*[T](e: T, r: RqlQuery): RqlQuery =
   ## Shortcut for `lt`
   r.gt(e)
 
@@ -95,7 +95,7 @@ proc `le`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(LE, r, t)
 
-proc `<=`*[T](e: T, r: RqlQuery): untyped =
+proc `<=`*[T](e: T, r: RqlQuery): RqlQuery =
   ## Shortcut for `le`
   r.ge(e)
 
@@ -104,7 +104,7 @@ proc `not`*[T](r: RqlQuery, e: T): RqlQuery =
   let t = r.expr(e)
   NEW_QUERY(NOT, r, t)
 
-proc `~`*[T](r: RqlQuery, e: T): untyped =
+proc `~`*[T](r: RqlQuery, e: T): RqlQuery =
   ## Shortcut for `not`
   r not e
 
