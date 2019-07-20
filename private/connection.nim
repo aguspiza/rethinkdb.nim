@@ -181,9 +181,10 @@ else:
     when defined(debug):
       L.log(lvlDebug, "Server response: ", data)
 
-    let
-      scramClient = newScramClient[SHA256Digest]()
-      firstMessage = scramClient.prepareFirstMessage(r.username)
+    
+    let scramClient = newScramClient[SHA256Digest]()
+    {.gcsafe.}:
+      let firstMessage = scramClient.prepareFirstMessage(r.username)
 
     data = HANDSHAKE_FIRST_MESSAGE % firstMessage
     when defined(debug):
@@ -197,7 +198,9 @@ else:
     if not response.hasKey("success") or not response["success"].bval:
       raise newException(RqlAuthError, "Error code " & $response["error_code"].num & ": " & response["error"].str)
 
-    data = HANDSHAKE_FINAL_MESSAGE % scramClient.prepareFinalMessage(r.password, response["authentication"].str)
+    {.gcsafe.}:
+      data = HANDSHAKE_FINAL_MESSAGE % scramClient.prepareFinalMessage(r.password, response["authentication"].str)
+
     when defined(debug):
       L.log(lvlDebug, "Sending final message: ", data)
 
@@ -208,9 +211,9 @@ else:
     response = parseJson(data)
     if not response.hasKey("success") or not response["success"].bval:
       raise newException(RqlAuthError, "Error code " & $response["error_code"].num & ": " & response["error"].str)
-
-    if not scramClient.verifyServerFinalMessage(response["authentication"].str):
-      raise newException(RqlAuthError, "Verification of server final message failed")
+    {.gcsafe.}:
+      if not scramClient.verifyServerFinalMessage(response["authentication"].str):
+        raise newException(RqlAuthError, "Verification of server final message failed")
 
     when defined(debug):
       L.log(lvlDebug, "Handshake success...")
