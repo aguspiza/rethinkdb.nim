@@ -107,8 +107,6 @@ when not compileOption("threads"):
         raise newException(RqlCompileError, $response.data[0])
       of RUNTIME_ERROR:
         raise newException(RqlRuntimeError, $response.data[0])
-      else:
-        raise newException(RqlDriverError, "Unknown response type $#" % [$response.kind])
 else:
    proc run*(r: RqlQuery, c: RethinkClient = nil, readMode = "single",
             timeFormat = "native", profile = false, durability = "hard", groupFormat = "native",

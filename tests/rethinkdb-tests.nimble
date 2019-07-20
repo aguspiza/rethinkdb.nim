@@ -6,4 +6,4 @@ description   = "New Nimble project for Nim"
 license       = "MIT"
 
 [Deps]
-Requires: "nim >= 0.12.0, tempfile, zip"
+Requires: "nim >= 0.20.0, tempfile, zip"

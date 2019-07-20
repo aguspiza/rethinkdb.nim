@@ -39,7 +39,7 @@ proc `%`*(m: MutableDatum): JsonNode {.thread.} =
         "+00:00"
       else:
         m.time.format("zzz")
-    result = %*{"$reql_type$": "TIME", "epoch_time": m.time.toTime.toSeconds(), "timezone": tz}
+    result = %*{"$reql_type$": "TIME", "epoch_time": m.time.toTime.toUnix(), "timezone": tz}
   of R_TERM:
     result = newJArray()
     result.add(newJInt(m.term.tt.ord))
@@ -91,50 +91,34 @@ template extract*(m: MutableDatum): untyped =
     nil
 
 proc `&`*(s: string): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_STRING
-  result.str = s
+  result = MutableDatum(kind: R_STRING, str: s)
 
 proc `&`*(b: bool): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_BOOLEAN
-  result.bval = b
+  result = MutableDatum(kind: R_BOOLEAN, bval: b)
 
 proc `&`*(n: float64): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_FLOAT
-  result.fval = n
+  result = MutableDatum(kind: R_FLOAT, fval: n)
 
 proc `&`*(n: int64): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_INTEGER
-  result.num = n
+  result = MutableDatum(kind: R_INTEGER, num: n)
 
 proc `&`*(a: openArray[MutableDatum]): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_ARRAY
-  result.arr = @[]
+  result = MutableDatum(kind: R_ARRAY, arr: @[])
   for x in a:
     result.arr.add(x)
 
 proc `&`*(a: seq[MutableDatum]): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_ARRAY
-  result.arr = @[]
+  result = MutableDatum(kind: R_ARRAY, arr: @[])
   for x in a:
     result.arr.add(x)
 
 proc `&`*(o: openArray[tuple[key: string, val: MutableDatum]]): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_OBJECT
-  result.obj = newTable[string, MutableDatum]()
+  result = MutableDatum(kind: R_OBJECT, obj: newTable[string, MutableDatum]())
   for x in o:
     result.obj[x[0]] = x[1]
 
 proc `&`*(o: TableRef[string, MutableDatum]): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_OBJECT
-  result.obj = o
+  result = MutableDatum(kind: R_OBJECT, obj: o)
 
 proc `&`*[T](a: openArray[(string, T)]): MutableDatum =
   var tbl = newTable[string, MutableDatum]()
@@ -143,14 +127,10 @@ proc `&`*[T](a: openArray[(string, T)]): MutableDatum =
   &tbl
 
 proc `&`*(b: BinaryData): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_BINARY
-  result.binary = b
+  result = MutableDatum(kind: R_BINARY, binary: b)
 
 proc `&`*(t: DateTime): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_TIME
-  result.time = t
+  result = MutableDatum(kind: R_TIME, time: t)
 
 
 proc newBinary*(s: string): BinaryData =
@@ -158,42 +138,31 @@ proc newBinary*(s: string): BinaryData =
   result.data = base64.encode(s)
 
 proc `&`*[T: int|float|string](a: openArray[T]): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_ARRAY
-  result.arr = @[]
+  result = MutableDatum(kind: R_ARRAY, arr: @[])
   for x in a:
     result.arr.add(&x)
 
 proc `&`*(r: RqlQuery): MutableDatum =
-  result = new(MutableDatum)
-  result.kind = R_TERM
-  result.term = r
+  result = MutableDatum(kind: R_TERM, term: r)
 
 proc `&`*(node: JsonNode): MutableDatum =
-  result = new(MutableDatum)
   case node.kind
   of JString:
-    result.kind = R_STRING
-    result.str = node.str
+    result = MutableDatum(kind: R_STRING, str: node.str)
   of JInt:
-    result.kind = R_INTEGER
-    result.num = node.num
+    result = MutableDatum(kind: R_INTEGER, num: node.num)
   of JFloat:
-    result.kind = R_FLOAT
-    result.fval = node.fnum
+    result = MutableDatum(kind: R_FLOAT, fval: node.fnum)
   of JBool:
-    result.kind = R_BOOLEAN
-    result.bval = node.bval
+    result = MutableDatum(kind: R_BOOLEAN, bval: node.bval)
   of JNull:
-    result.kind = R_NULL
+    result = MutableDatum(kind: R_NULL)
   of JObject:
-    result.kind = R_OBJECT
-    result.obj = newTable[string, MutableDatum]()
+    result = MutableDatum(kind: R_OBJECT, obj: newTable[string, MutableDatum]())
     for key, item in node:
       result.obj[key] = &item
   of JArray:
-    result.kind = R_ARRAY
-    result.arr = @[]
+    result = MutableDatum(kind: R_ARRAY, arr: @[])
     for item in items(node.elems):
       result.arr.add(&item)
 
@@ -204,12 +173,12 @@ proc toDatum(x: NimNode): NimNode {.compiletime.} =
   case x.kind
   of nnkBracket:
     result = newNimNode(nnkBracket)
-    for i in 0 .. <x.len:
+    for i in 0 ..< x.len:
       result.add(toDatum(x[i]))
 
   of nnkTableConstr:
     result = newNimNode(nnkTableConstr)
-    for i in 0 .. <x.len:
+    for i in 0 ..< x.len:
       assert x[i].kind == nnkExprColonExpr
       result.add(newNimNode(nnkExprColonExpr).add(x[i][0]).add(toDatum(x[i][1])))
 

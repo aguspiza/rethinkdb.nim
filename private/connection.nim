@@ -279,7 +279,7 @@ when not compileOption("threads"):
     if not r.isConnected:
       if r.username != username:
         r.username = username
-        if not  password.isNilOrEmpty and r.password != password:
+        if not  password.len == 0 and r.password != password:
           r.password = password
       when defined(debug):
         L.log(lvlDebug, "Connecting to server at $#:$#..." % [r.address, $r.port.int])

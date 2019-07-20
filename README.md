@@ -22,7 +22,8 @@ Set the default connection to make REPL use easier. Allows calling .run() on que
 ```nim
 r.repl()
 #or
-r.connect().repl()
+r.connect()
+r.repl()
 ```
 ### close
 Close an open connetion
@@ -43,7 +44,8 @@ r.use(db_name)
 Run a query on a connection, returning a JsonNode.
 ```nim
 var r = newRethinkclient()
-r.connect().repl()
+r.connect()
+r.repl()
 r.table("test").run()
 ```
 

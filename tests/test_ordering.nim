@@ -6,7 +6,7 @@ r.connect()
 r.repl()
 
 randomize()
-let db = "test_lambda_" & $random(9999)
+let db = "test_lambda_" & $rand(9999)
 let table = "SuperHeroes"
 
 r.dbCreate(db).run()
