@@ -10,7 +10,7 @@ $ nimble install rethinkdb
 Initiate new RethinkDB Client
 ```nim
 import rethinkdb
-var r = newRethinkclient([address = "127.0.0.1",] [port = Port(28015),] [auth = "",] [db = ""])
+var r = newRethinkclient(address = "127.0.0.1", port = Port(28015), db = "")
 ```
 ### connect
 Create a connection to database server, using infomation from RethinkClient
