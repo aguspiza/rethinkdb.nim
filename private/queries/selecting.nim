@@ -4,7 +4,7 @@
 
 proc db*(r: RethinkClient, db: string): RqlQuery =
   ## Reference a database.
-  NEW_QUERY(DB)
+  NEW_QUERY(DB, db)
 
 proc table*[T: RethinkClient|RqlQuery](r: T, t: string): RqlQuery =
   ## Select all documents in a table
